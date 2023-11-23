@@ -4,6 +4,7 @@ import android.util.Log
 import com.example.mobila_applikationer_lab12.model.data.Forecast
 import com.example.mobila_applikationer_lab12.model.data.Geometry
 import com.example.mobila_applikationer_lab12.model.data.Parameter
+import com.example.mobila_applikationer_lab12.model.data.Place
 import com.example.mobila_applikationer_lab12.model.data.TimeSeries
 import com.example.mobila_applikationer_lab12.model.data.Weather
 import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
@@ -15,17 +16,18 @@ import java.net.URL
 import com.example.mobila_applikationer_lab12.utils.Result
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import org.json.JSONArray
 import org.json.JSONObject
 
-@Serializable
 object WeatherDataSource {
-    private const val BASE_URL = "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/16/lat/58/data.json"
-    suspend fun getWeather(): Result<Forecast> {
-        val urlString = BASE_URL
+
+    private fun getBASE_URL(longitude:Double,latitude:Double):String{
+        val lon = truncateLastCharsFromDouble(longitude,2)
+        val lat = truncateLastCharsFromDouble(latitude,2)
+        return "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/${lon}/lat/${lat}/data.json"
+    }
+    suspend fun getWeather(lon:Double,lat:Double): Result<Forecast> {
+        val urlString = getBASE_URL(lon,lat)
         val url = URL(urlString)
 
         return withContext(Dispatchers.IO) {
@@ -42,7 +44,14 @@ object WeatherDataSource {
             }
         }
     }
-
+    suspend fun getWeather(place : Place):Result<Forecast>{
+        return getWeather(place.lon,place.lat)
+    }
+    private fun truncateLastCharsFromDouble(value:Double,nrOfCharacters:Int): Double {
+        val lonString = value.toString()
+        val truncatedLonString = lonString.dropLast(nrOfCharacters)
+        return truncatedLonString.toDouble()
+    }
     private fun parseData(json: String): Forecast {
         val jsonObject = JSONObject(json)
 
