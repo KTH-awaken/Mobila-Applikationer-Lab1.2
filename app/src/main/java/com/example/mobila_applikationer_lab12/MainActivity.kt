@@ -48,8 +48,13 @@ class MainActivity : ComponentActivity() {
 }
 
 suspend fun test(){
+
     val result2 = WeatherDataSource.getWeather()
     Log.d("TEST_DATA",result2.toString())
+
+    Log.d("TEST","Hello world")
+    val result = JokeDataSource.getRandomJoke()
+    Log.d("TEST",result.toString())
 }
 
 @Composable

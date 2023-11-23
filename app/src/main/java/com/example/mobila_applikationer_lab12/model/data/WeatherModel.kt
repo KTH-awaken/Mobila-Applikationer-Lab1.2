@@ -1,4 +1,59 @@
 package com.example.mobila_applikationer_lab12.model.data
+import android.util.Log
+import com.example.mobila_applikationer_lab12.networking.PlaceDataSource
+import com.example.mobila_applikationer_lab12.networking.WeatherDataSource
+import com.example.mobila_applikationer_lab12.utils.Result
+
+
+interface IWeatherModel{
+
+}
+
+class WeatherModel:IWeatherModel{
+    suspend fun getPlace(placeName: String):Place? {
+        var place:Place? = null
+        when (val result = PlaceDataSource.getPlace(placeName)) {
+            is Result.Success -> {
+                place = result.data
+            }
+            else -> {
+                Log.d("ERROR", "Error getting place")
+            }
+        }
+        return place
+    }
+    suspend fun getForecast(place : Place):Forecast?{
+        var forecast:Forecast? = null
+        when (val result = WeatherDataSource.getWeather(place)) {
+            is Result.Success -> {
+                forecast = result.data
+            }
+            else -> {
+                Log.d("ERROR", "Error getting forecast")
+            }
+        }
+        return forecast
+    }
+
+    private suspend fun getRawForecastByPlace(placeName: String): Forecast {
+        val place = getPlace(placeName) ?: throw Exception("Could not find place")
+        return getForecast(place) ?: throw Exception("Could not find forecast")
+    }
+    /*
+    fun getForecastByPlace(placeName: String): Forecast {
+        try{
+            return getRawForecastByPlace(placeName)
+        }catch (e:Exception){
+            Log.d("ERROR",e.toString())
+        }
+    }
+
+     */
+
+
+
+}
+
 
 
 data class Weather(
