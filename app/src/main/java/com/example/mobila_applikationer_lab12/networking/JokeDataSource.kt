@@ -27,8 +27,6 @@ object JokeDataSource {
                 val type = object : TypeToken<Joke>() {}.type
                 val joke = Gson().fromJson<Joke>(json, type)
 
-                Log.d("TEST", joke.toString())
-
                 Result.Success(joke)
             } catch (e: Exception) {
                 Result.Error(e)

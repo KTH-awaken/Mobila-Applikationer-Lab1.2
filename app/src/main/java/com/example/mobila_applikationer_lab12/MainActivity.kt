@@ -12,34 +12,46 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.mobila_applikationer_lab12.networking.JokeDataSource
-import com.example.mobila_applikationer_lab12.networking.WeatherDataSource
 import com.example.mobila_applikationer_lab12.ui.theme.MobilaApplikationerLab12Theme
 import kotlinx.coroutines.runBlocking
+import androidx.navigation.compose.rememberNavController
+import com.example.mobila_applikationer_lab12.ui.screens.Home
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import com.example.mobila_applikationer_lab12.networking.WeatherDataSource
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             MobilaApplikationerLab12Theme {
+                val navController = rememberNavController()
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    var text = "Waiting on data..."
-                    runBlocking {
-                        text = test()
+                    NavHost(navController, startDestination = "home"){
+                        composable("home"){
+                            Home()
+                        }
                     }
-                    Greeting("Android")
-                    Text(text = text)
+                    runBlocking {
+                        test()
+                    }
                 }
             }
         }
     }
 }
 
-suspend fun test(): String{
-    return WeatherDataSource.getWeather().toString()
+suspend fun test(){
+    Log.d("TEST","Hello world")
+    val result = JokeDataSource.getRandomJoke()
+    Log.d("TEST",result.toString())
+
+    val result2 = WeatherDataSource.getWeather()
+    Log.d("TEST",result2.toString())
 }
 
 @Composable
