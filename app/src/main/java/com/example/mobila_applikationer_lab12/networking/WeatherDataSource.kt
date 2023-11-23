@@ -47,6 +47,9 @@ object WeatherDataSource {
     suspend fun getWeather(place : Place):Result<Forecast>{
         return getWeather(place.lon,place.lat)
     }
+    suspend fun getWeather():Result<Forecast>{
+        return getWeather(18.07109,59.32511)
+    }
     private fun truncateLastCharsFromDouble(value:Double,nrOfCharacters:Int): Double {
         val lonString = value.toString()
         val truncatedLonString = lonString.dropLast(nrOfCharacters)
