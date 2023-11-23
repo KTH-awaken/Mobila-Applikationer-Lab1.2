@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.mobila_applikationer_lab12.networking.JokeDataSource
+import com.example.mobila_applikationer_lab12.networking.WeatherDataSource
 import com.example.mobila_applikationer_lab12.ui.theme.MobilaApplikationerLab12Theme
 import kotlinx.coroutines.runBlocking
 
@@ -25,20 +26,20 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
+                    var text = "Waiting on data..."
                     runBlocking {
-                        test()
+                        text = test()
                     }
                     Greeting("Android")
+                    Text(text = text)
                 }
             }
         }
     }
 }
 
-suspend fun test(){
-    Log.d("TEST","Hello world")
-    val result = JokeDataSource.getRandomJoke()
-    Log.d("TEST",result.toString())
+suspend fun test(): String{
+    return WeatherDataSource.getWeather().toString()
 }
 
 @Composable
