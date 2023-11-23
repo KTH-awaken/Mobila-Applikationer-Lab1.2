@@ -52,6 +52,8 @@ android {
 dependencies {
     //Gson
     implementation("com.google.code.gson:gson:2.10.1")
+    //Navigation
+    implementation("androidx.navigation:navigation-compose:2.4.0")
 
     implementation("androidx.core:core-ktx:1.9.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
@@ -68,4 +70,5 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
+
 }
