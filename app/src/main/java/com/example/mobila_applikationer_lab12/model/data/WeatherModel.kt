@@ -1,6 +1,5 @@
 package com.example.mobila_applikationer_lab12.model.data
 
-import kotlinx.serialization.Serializable
 
 data class Weather(
     val error: Boolean,

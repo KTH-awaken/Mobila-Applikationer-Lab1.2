@@ -12,10 +12,11 @@ import androidx.compose.ui.graphics.Color
 import com.example.mobila_applikationer_lab12.ui.components.HourlyView
 import com.example.mobila_applikationer_lab12.ui.components.Overview
 import com.example.mobila_applikationer_lab12.ui.components.SevenDayView
+import com.example.mobila_applikationer_lab12.ui.viewmodels.WeatherVM
 
 @Composable
 fun Home(
-    //todo add vm
+    vm :WeatherVM
     //todo add nav controller
 ){
     Column( // Container
@@ -25,7 +26,8 @@ fun Home(
         horizontalAlignment = Alignment.CenterHorizontally,
 
     ){
-        Overview()
+        vm.fetchWeatherData()
+        Overview(vm = vm)
         HourlyView()
         SevenDayView()
     }

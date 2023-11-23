@@ -6,7 +6,6 @@ import com.example.mobila_applikationer_lab12.model.data.Geometry
 import com.example.mobila_applikationer_lab12.model.data.Parameter
 import com.example.mobila_applikationer_lab12.model.data.TimeSeries
 import com.example.mobila_applikationer_lab12.model.data.Weather
-import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -15,13 +14,9 @@ import java.net.URL
 import com.example.mobila_applikationer_lab12.utils.Result
 import com.google.gson.JsonObject
 import com.google.gson.JsonParser
-import kotlinx.serialization.Serializable
-import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import org.json.JSONArray
 import org.json.JSONObject
 
-@Serializable
 object WeatherDataSource {
     private const val BASE_URL = "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/16/lat/58/data.json"
     suspend fun getWeather(): Result<Forecast> {

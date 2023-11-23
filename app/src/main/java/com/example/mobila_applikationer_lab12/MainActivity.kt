@@ -19,6 +19,7 @@ import com.example.mobila_applikationer_lab12.ui.screens.Home
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.mobila_applikationer_lab12.networking.WeatherDataSource
+import com.example.mobila_applikationer_lab12.ui.viewmodels.WeatherVM
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +34,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavHost(navController, startDestination = "home"){
                         composable("home"){
-                            Home()
+                            val vm = WeatherVM(application = application)
+                            Home(vm)
                         }
                     }
                     runBlocking {
@@ -46,12 +48,8 @@ class MainActivity : ComponentActivity() {
 }
 
 suspend fun test(){
-    Log.d("TEST","Hello world")
-    val result = JokeDataSource.getRandomJoke()
-    Log.d("TEST",result.toString())
-
     val result2 = WeatherDataSource.getWeather()
-    Log.d("TEST",result2.toString())
+    Log.d("TEST_DATA",result2.toString())
 }
 
 @Composable

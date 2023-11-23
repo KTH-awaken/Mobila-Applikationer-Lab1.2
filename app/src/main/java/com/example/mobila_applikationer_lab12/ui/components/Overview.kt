@@ -18,20 +18,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobila_applikationer_lab12.R
-
+import com.example.mobila_applikationer_lab12.ui.viewmodels.WeatherVM
+import androidx.compose.runtime.collectAsState
 
 @Composable
 fun Overview(
-    //todo add vm
+   vm :WeatherVM
 ){
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
+        val joke = vm.currentAreaTemperature.collectAsState()
         Text(
             modifier = Modifier
                 .padding(top = 40.dp,bottom = 40.dp),
-            text = "7°",
+            text = "${joke.value}",
             style = MaterialTheme.typography.headlineLarge.copy(fontSize = 60.sp),
             color = Color.White,
         )
