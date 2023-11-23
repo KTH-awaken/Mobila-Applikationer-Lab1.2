@@ -18,7 +18,6 @@ import androidx.navigation.compose.rememberNavController
 import com.example.mobila_applikationer_lab12.ui.screens.Home
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.mobila_applikationer_lab12.model.data.WeatherModel
 import com.example.mobila_applikationer_lab12.networking.WeatherDataSource
 
 class MainActivity : ComponentActivity() {
@@ -51,13 +50,8 @@ suspend fun test(){
     val result = JokeDataSource.getRandomJoke()
     Log.d("TEST",result.toString())
 
-    val result2: WeatherModel = WeatherModel()
-    try {
-        val forecast = result2.getForecastByPlace("Stockholm")
-        Log.d("TEST", forecast.toString())
-    } catch (e: Exception) {
-        Log.e("TEST", "Error fetching forecast: $e")
-    }
+    //val result2 = WeatherDataSource.getWeather()
+    //Log.d("TEST",result2.toString())
 }
 
 @Composable

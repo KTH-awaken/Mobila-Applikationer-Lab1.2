@@ -36,10 +36,20 @@ class WeatherModel:IWeatherModel{
         return forecast
     }
 
-    suspend fun getForecastByPlace(placeName: String): Forecast {
+    private suspend fun getRawForecastByPlace(placeName: String): Forecast {
         val place = getPlace(placeName) ?: throw Exception("Could not find place")
         return getForecast(place) ?: throw Exception("Could not find forecast")
     }
+    /*
+    fun getForecastByPlace(placeName: String): Forecast {
+        try{
+            return getRawForecastByPlace(placeName)
+        }catch (e:Exception){
+            Log.d("ERROR",e.toString())
+        }
+    }
+
+     */
 
 
 
