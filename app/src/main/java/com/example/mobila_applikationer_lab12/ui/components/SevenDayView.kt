@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobila_applikationer_lab12.R
+import com.example.mobila_applikationer_lab12.ui.Styles.componentWidth
 
 @Composable
 fun SevenDayView(
@@ -39,7 +40,7 @@ fun SevenDayView(
             colors = customCardColors,
             elevation = CardDefaults.cardElevation(defaultElevation = 6.dp,),
             modifier = Modifier
-                .size(width = 340.dp, height = 330.dp)
+                .size(width = componentWidth, height = 330.dp)
         ){
             Day()
             Day()
