@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.mobila_applikationer_lab12.ui.Styles.componentWidth
 
 @Composable
 fun HourlyView(
@@ -34,7 +35,7 @@ fun HourlyView(
             colors = customCardColors,
             elevation = CardDefaults.cardElevation(defaultElevation = 6.dp,),
             modifier = Modifier
-                .size(width = 340.dp, height = 130.dp)
+                .size(width = componentWidth, height = 130.dp)
         ){
             Row(
                 modifier = Modifier.fillMaxWidth(),

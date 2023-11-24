@@ -29,7 +29,7 @@ interface WeatherViewModel{
 class WeatherVM(
 application: Application
 ) :AndroidViewModel(application), WeatherViewModel{
-    private val _currentAreaTemperature = MutableStateFlow("TEST VALUE")
+    private val _currentAreaTemperature = MutableStateFlow("-1")
     override val currentAreaTemperature: StateFlow<String>
         get() = _currentAreaTemperature.asStateFlow()
 
