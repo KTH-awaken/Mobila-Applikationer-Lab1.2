@@ -3,6 +3,13 @@ import android.util.Log
 import com.example.mobila_applikationer_lab12.networking.PlaceDataSource
 import com.example.mobila_applikationer_lab12.networking.WeatherDataSource
 import com.example.mobila_applikationer_lab12.utils.Result
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 interface IWeatherModel{
@@ -51,6 +58,24 @@ class WeatherModel:IWeatherModel{
      */
 
 
+    fun getHourlyForecast(placeName: String):List<TimeSeries>{
+        val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+        return runBlocking {
+            val parametersList = async(Dispatchers.IO) {
+                val rawForecast = getRawForecastByPlace(placeName)
+                rawForecast?.timeSeries
+                    ?.filter { it.validTime.startsWith(currentDate)}
+                    ?.map {
+                        Log.d("DATA_HOURLY","Valid time: "+ it.validTime.toString())
+                        TimeSeries(it.validTime, it.parameters) }
+                    ?: emptyList()
+            }
+            parametersList.await()
+        }
+    }
+    fun getWeeklyForecast(placeName:String){
+
+    }
 
 }
 
