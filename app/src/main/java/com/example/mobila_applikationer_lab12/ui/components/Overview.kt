@@ -29,11 +29,11 @@ fun Overview(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        val joke = vm.currentAreaTemperature.collectAsState()
+        val currentAreaTemperature = vm.currentAreaTemperature.collectAsState()
         Text(
             modifier = Modifier
                 .padding(top = 40.dp,bottom = 40.dp),
-            text = "${joke.value}",
+            text = "${currentAreaTemperature.value}°",
             style = MaterialTheme.typography.headlineLarge.copy(fontSize = 60.sp),
             color = Color.White,
         )

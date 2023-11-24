@@ -48,7 +48,6 @@ application: Application
             try {
                 val result= WeatherDataSource.getWeather()
                 if (result is Result.Success){
-//                    _currentAreaTemperature.update { "${result.data}" }
                     val f = Forecast(
                         result.data.approvedTime,
                         result.data.referenceTime,
@@ -62,7 +61,7 @@ application: Application
                     _currentAreaTemperature.update { c.toString() }
                     //TODO SAVE Weather to db
                 }else{
-                    _weatherState.value = Result.Error(Exception("Faild to fetch data"))
+                    _weatherState.value = Result.Error(Exception("Failed to fetch data"))
                 }
             }catch (e: Exception){
                 _weatherState.value = Result.Error(e)

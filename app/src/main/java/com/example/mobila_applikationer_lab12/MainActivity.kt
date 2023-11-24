@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
                     NavHost(navController, startDestination = "home"){
                         composable("home"){
                             val vm = WeatherVM(application = application)
-                            Home(vm)
+                            Home(vm,navController)
                         }
                     }
                     runBlocking {
