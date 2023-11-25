@@ -6,7 +6,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -18,16 +17,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
-import com.example.mobila_applikationer_lab12.networking.JokeDataSource
 import com.example.mobila_applikationer_lab12.ui.theme.MobilaApplikationerLab12Theme
-import kotlinx.coroutines.runBlocking
 import androidx.navigation.compose.rememberNavController
 import com.example.mobila_applikationer_lab12.ui.screens.Home
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.mobila_applikationer_lab12.networking.WeatherDataSource
 import com.example.mobila_applikationer_lab12.ui.Destinations
 import com.example.mobila_applikationer_lab12.ui.components.BottomBar
 import com.example.mobila_applikationer_lab12.ui.viewmodels.WeatherVM
@@ -35,8 +30,8 @@ import android.os.Build
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
-import androidx.compose.foundation.layout.width
-import androidx.compose.ui.Alignment
+import com.example.mobila_applikationer_lab12.model.data.WeatherModel
+import kotlinx.coroutines.runBlocking
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -47,11 +42,12 @@ class MainActivity : ComponentActivity() {
         setContent {
             MobilaApplikationerLab12Theme {
                 val navController = rememberNavController()
-                val vm = WeatherVM(application = application)
+                val weatherModel = WeatherModel()
+                val vm = WeatherVM(application = application, weatherModel = weatherModel)
 
-//                    runBlocking {
-//                        test()
-//                    }
+                runBlocking {
+                    test(weatherModel)
+                }
 
                 var buttonsVisible = remember { mutableStateOf(true) }
                 Surface(
@@ -86,14 +82,12 @@ fun NavigationGraph(navController: NavHostController,vm: WeatherVM) {
     }
 }
 
-suspend fun test(){
+suspend fun test(weatherModel: WeatherModel) {
+//    val result1 = weatherModel.getHourlyForecast("Stockholm")
+//    Log.d("TEST_DATA",result1.toString())
+//    val result2 = WeatherDataSource.getWeather()
+//    Log.d("TEST_DATA",result2.toString())
 
-    val result2 = WeatherDataSource.getWeather()
-    Log.d("TEST_DATA",result2.toString())
-
-    Log.d("TEST","Hello world")
-    val result = JokeDataSource.getRandomJoke()
-    Log.d("TEST",result.toString())
 }
 
 @Composable

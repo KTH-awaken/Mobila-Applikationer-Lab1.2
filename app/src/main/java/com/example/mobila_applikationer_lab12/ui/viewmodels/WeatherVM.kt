@@ -5,7 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mobila_applikationer_lab12.model.data.Forecast
 import com.example.mobila_applikationer_lab12.model.data.Geometry
-import com.example.mobila_applikationer_lab12.networking.JokeDataSource
+import com.example.mobila_applikationer_lab12.model.data.WeatherModel
 import com.example.mobila_applikationer_lab12.networking.WeatherDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,12 +23,12 @@ interface WeatherViewModel{
     //VM funktioner
     fun fetchWeatherData()
 }
-//AndroidViewModel erbjuder funktoinalitet som viewModelScope.launch som används i fetch
-//WeatherVM implemneterar därför AndroidViewModel
-//AndroidViewModel kräver att aplicaton sickas med. Aplicaton är programets state/instans
+
 class WeatherVM(
-application: Application
-) :AndroidViewModel(application), WeatherViewModel{
+    application: Application,
+    private val weatherModel: WeatherModel,
+    ) :AndroidViewModel(application), WeatherViewModel{
+
     private val _currentAreaTemperature = MutableStateFlow("-1")
     override val currentAreaTemperature: StateFlow<String>
         get() = _currentAreaTemperature.asStateFlow()
@@ -36,13 +36,17 @@ application: Application
     private val _weatherState = MutableStateFlow<Result<String>>(Result.Loading)
     val weatherState: StateFlow<Result<String>> = _weatherState
 
+    private val _hourlyForecast = MutableStateFlow<List<Hour>>(emptyList())
+    val hourlyForecast: StateFlow<List<Hour>> get() = _hourlyForecast
+
     init {
         getSavedWeather()
     }
 
     override fun fetchWeatherData() {
-
-
+        //Hourly
+//        updateHourlyForecast()
+        //Overview
         viewModelScope.launch {
             _weatherState.value = Result.Loading
             try {
@@ -72,4 +76,25 @@ application: Application
     private fun getSavedWeather(){
         //TODO implement this
     }
+
+    private fun updateHourlyForecast() {
+        val rawForecast = weatherModel.getHourlyForecast("Stockholm")
+        val hourList = rawForecast.map { timeSeries ->
+            Hour(
+                time = timeSeries.validTime,
+                temperature = "${timeSeries.parameters.find { it.name == "t" }?.values?.get(0)}°C",
+                chanceOfRain = "${timeSeries.parameters.find { it.name == "pcat" }?.values?.get(0)}%"
+            )
+        }
+
+        _hourlyForecast.value = hourList
+    }
+
+
 }
+
+data class Hour(
+    val time: String,
+    val temperature: String,
+    val chanceOfRain: String
+)

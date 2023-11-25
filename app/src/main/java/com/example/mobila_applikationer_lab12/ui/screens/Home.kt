@@ -35,8 +35,8 @@ fun Home(
         ){
 //        vm.fetchWeatherData()
         Overview(vm = vm)
-        HourlyView()
-        SevenDayView()
+        HourlyView(vm = vm)
+        SevenDayView(vm = vm)
     }
 }
 

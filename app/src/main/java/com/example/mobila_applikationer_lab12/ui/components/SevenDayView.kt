@@ -21,11 +21,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.mobila_applikationer_lab12.R
 import com.example.mobila_applikationer_lab12.ui.Styles.componentWidth
+import com.example.mobila_applikationer_lab12.ui.viewmodels.WeatherVM
 
 @Composable
 fun SevenDayView(
-    //todo add vm
-){
+    vm : WeatherVM,
+    ){
     Column(
         modifier = Modifier
             .padding(10.dp),
