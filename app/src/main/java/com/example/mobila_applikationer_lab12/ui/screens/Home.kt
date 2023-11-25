@@ -33,7 +33,6 @@ fun Home(
         horizontalAlignment = Alignment.CenterHorizontally,
 
         ){
-//        vm.fetchWeatherData()
         Overview(vm = vm)
         HourlyView(vm = vm)
         SevenDayView(vm = vm)

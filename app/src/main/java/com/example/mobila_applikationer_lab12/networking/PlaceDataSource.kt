@@ -4,14 +4,12 @@ import android.util.Log
 import com.example.mobila_applikationer_lab12.model.data.Forecast
 import com.example.mobila_applikationer_lab12.model.data.Place
 import com.example.mobila_applikationer_lab12.utils.Result
-import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import kotlinx.serialization.Serializable
 import java.net.HttpURLConnection
 import java.net.URL
-@Serializable
 object PlaceDataSource{
     private const val BASE_URL = "https://geocode.maps.co/search?q="
     suspend fun getPlace(placeName:String): Result<Place> {

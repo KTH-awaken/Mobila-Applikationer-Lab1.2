@@ -6,7 +6,6 @@ import com.example.mobila_applikationer_lab12.model.data.Geometry
 import com.example.mobila_applikationer_lab12.model.data.Parameter
 import com.example.mobila_applikationer_lab12.model.data.Place
 import com.example.mobila_applikationer_lab12.model.data.TimeSeries
-import com.example.mobila_applikationer_lab12.model.data.Weather
 import com.google.gson.Gson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext

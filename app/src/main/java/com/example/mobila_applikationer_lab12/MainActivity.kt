@@ -83,8 +83,8 @@ fun NavigationGraph(navController: NavHostController,vm: WeatherVM) {
 }
 
 suspend fun test(weatherModel: WeatherModel) {
-//    val result1 = weatherModel.getHourlyForecast("Stockholm")
-//    Log.d("TEST_DATA",result1.toString())
+    val result1 = weatherModel.getHourlyForecast("Stockholm")
+    Log.d("TEST_DATA",result1.toString())
 //    val result2 = WeatherDataSource.getWeather()
 //    Log.d("TEST_DATA",result2.toString())
 

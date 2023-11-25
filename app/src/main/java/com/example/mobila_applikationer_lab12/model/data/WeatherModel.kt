@@ -8,6 +8,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
@@ -56,35 +57,56 @@ class WeatherModel:IWeatherModel{
     }
 
      */
+    //Nya getHourlyFrocast den enda skilanden är att den hämtar alltid 12 timmar framåt oavset hur nära kl är 12
+    fun getHourlyForecast(placeName: String): List<TimeSeries> {
+        val currentDateTime = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).format(Date())
+        val twelveHoursLater = Calendar.getInstance()
+        twelveHoursLater.add(Calendar.HOUR_OF_DAY, 12)
+        val twelveHoursLaterDateTime = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).format(twelveHoursLater.time)
 
-
-    fun getHourlyForecast(placeName: String):List<TimeSeries>{
-        val currentDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
         return runBlocking {
             val parametersList = async(Dispatchers.IO) {
                 val rawForecast = getRawForecastByPlace(placeName)
                 rawForecast?.timeSeries
-                    ?.filter { it.validTime.startsWith(currentDate)}
+                    ?.filter { it.validTime >= currentDateTime && it.validTime <= twelveHoursLaterDateTime }
                     ?.map {
-                        Log.d("DATA_HOURLY","Valid time: "+ it.validTime.toString())
-                        TimeSeries(it.validTime, it.parameters) }
+                        Log.d("DATA_HOURLY", "Valid time: " + it.validTime.toString())
+                        TimeSeries(it.validTime, it.parameters)
+                    }
                     ?: emptyList()
             }
             parametersList.await()
         }
     }
-    fun getWeeklyForecast(placeName:String){
 
+    suspend fun getWeeklyForecast(placeName: String): List<Day> {
+        val numberOfDays = 14
+        val currentDateTime = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).format(Date())
+        val endDate = Calendar.getInstance()
+        endDate.add(Calendar.DAY_OF_YEAR, numberOfDays)
+        val endDateTime = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.getDefault()).format(endDate.time)
+
+        return runBlocking {
+            val parametersList = async(Dispatchers.IO) {
+                val rawForecast = getRawForecastByPlace(placeName)
+                rawForecast?.timeSeries
+                    ?.filter { it.validTime >= currentDateTime && it.validTime <= endDateTime }
+                    ?.groupBy { it.validTime.substring(0, 10) } // Group by date
+                    ?.map { (date, timeSeriesList) ->
+                        val dayForecast = timeSeriesList.firstOrNull()
+                        val highestTemp = dayForecast?.parameters?.find { it.name == "t" }?.values?.maxOrNull()?.toString()
+                        val lowestTemp = dayForecast?.parameters?.find { it.name == "t" }?.values?.minOrNull()?.toString()
+                        val chanceOfRain = dayForecast?.parameters?.find { it.name == "r" }?.values?.average()?.toString()
+
+                        Day(date, highestTemp ?: "", lowestTemp ?: "", chanceOfRain ?: "")
+                    }
+                    ?: emptyList()
+            }
+            parametersList.await()
+        }
     }
-
 }
 
-
-
-data class Weather(
-    val error: Boolean,
-    val tmp: String,
-)
 data class Forecast(
     val approvedTime: String,
     val referenceTime: String,
@@ -108,4 +130,10 @@ data class Parameter(
     val level: Int,
     val unit: String,
     val values: List<Double>
+)
+data class Day(
+    val day: String,
+    val temperatureHighest: String,
+    val temperatureLowest: String,
+    val chanceOfRain: String
 )
