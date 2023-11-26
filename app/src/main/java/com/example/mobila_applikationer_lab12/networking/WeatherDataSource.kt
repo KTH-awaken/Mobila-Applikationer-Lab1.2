@@ -17,30 +17,21 @@ import com.google.gson.JsonObject
 import com.google.gson.JsonParser
 import org.json.JSONArray
 import org.json.JSONObject
+import retrofit2.HttpException
 
 object WeatherDataSource {
 
-    private fun getBASE_URL(longitude:Double,latitude:Double):String{
+    suspend fun getWeather(longitude:Double,latitude:Double): Result<Forecast> {
         val lon = truncateLastCharsFromDouble(longitude,2)
         val lat = truncateLastCharsFromDouble(latitude,2)
-        return "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/${lon}/lat/${lat}/data.json"
-    }
-    suspend fun getWeather(lon:Double,lat:Double): Result<Forecast> {
-        val urlString = getBASE_URL(lon,lat)
-        val url = URL(urlString)
 
-        return withContext(Dispatchers.IO) {
-            try {
-                val connection = url.openConnection() as HttpURLConnection
-                val inputStream = connection.inputStream
-                val json = inputStream.bufferedReader().use { it.readText() }
-                Log.d("TEST","Input stream: "+  json.toString())
-                val forecast = parseData(json)
-                Result.Success(forecast)
-            } catch (e: Exception) {
-                Log.d("TEST_ERROR", e.toString())
-                Result.Error(e)
-            }
+        return try {
+            val forecast = RetrofitInstance.weatherService.getWeather(lon, lat)
+            Result.Success(forecast)
+        } catch (e: HttpException) {
+            Result.Error(e)
+        } catch (e: Exception) {
+            Result.Error(e)
         }
     }
     suspend fun getWeather(place : Place):Result<Forecast>{
