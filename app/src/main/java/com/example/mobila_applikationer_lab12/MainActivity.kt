@@ -51,9 +51,9 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val vm = WeatherVM(application = application)
 
- //                   runBlocking {
- //                       test()
- //                   }
+                    runBlocking {
+                        test()
+                    }
 
                 var buttonsVisible = remember { mutableStateOf(true) }
                 Surface(
@@ -100,11 +100,11 @@ suspend fun test(){
     val weatherModel = WeatherModel()
     val dayForecast = weatherModel.getHourlyForecast("Stockholm")
     Log.d("DATA_DAY","Current time=${dayForecast.timeSeries[1].validTime}")
-    Log.d("DATA_DAY","Lowest tmp=${dayForecast.lowestTemp} highest tmp=${dayForecast.highestTemp}")
+    Log.d("DATA_DAY","Lowest tmp=${dayForecast.lowestTemp} highest tmp=${dayForecast.highestTemp} Avg Wind Speed=${dayForecast.averageWindSpeed}")
     val weeklyForecast = weatherModel.getWeeklyForecast("Stockholm")
     Log.d("DATA_WEEKLY","Nr of weekly forecasts=${weeklyForecast.size}")
     weeklyForecast.forEach {
-        Log.d("DATA_WEEKLY_DAY","Lowest tmp=${it.lowestTemp} Highest tmp=${it.highestTemp}")
+        Log.d("DATA_WEEKLY_DAY","Lowest tmp=${it.lowestTemp} Highest tmp=${it.highestTemp} Avg Wind Speed=${it.averageWindSpeed} avg Precipitation=${it.avgPCAT}")
     }
 }
 

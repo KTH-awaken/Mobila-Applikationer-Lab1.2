@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
+import kotlin.math.ceil
 
 
 interface IWeatherModel{
@@ -72,11 +73,22 @@ class WeatherModel:IWeatherModel{
             }
             parametersList.await()
         }
-        val highestTemp = timeSeries.flatMap { it.parameters[ParameterIndex.T.ordinal].values }
+        val highestTemp = timeSeries.flatMap { it.parameters[findIndexByParameterName("t",it)].values }
             .max()
-        val lowestTemp = timeSeries.flatMap { it.parameters[ParameterIndex.T.ordinal].values }
+        val lowestTemp = timeSeries.flatMap { it.parameters[findIndexByParameterName("t",it)].values }
             .min()
-        return DayForecast(timeSeries,highestTemp,lowestTemp)
+        val averageWindSpeed = timeSeries.flatMap { it.parameters[findIndexByParameterName("ws",it)].values }
+            .average()
+        val pcat = timeSeries.flatMap { it.parameters[findIndexByParameterName("pcat",it)].values }
+
+        val occurrences = pcat.groupingBy { it }.eachCount()
+        val mostOccurringNumber = occurrences.maxByOrNull { it.value }?.key
+        var prepicitation_cat = "No precipitation"
+        if( mostOccurringNumber!= null){
+            prepicitation_cat = findPrecipitationByIndex(mostOccurringNumber.toInt())
+        }
+
+        return DayForecast(timeSeries,highestTemp,lowestTemp,String.format("%.1f",averageWindSpeed).toDouble(),prepicitation_cat)
     }
     fun getWeeklyForecast(placeName: String): List<DayForecast> {
         val rawForecast = runBlocking(Dispatchers.IO) {
@@ -94,44 +106,64 @@ class WeatherModel:IWeatherModel{
                 .format(Date(currentDate.time + TimeUnit.DAYS.toMillis(i.toLong())))
 
             val dailyTimeSeries = timeSeriesList.filter { it.validTime.startsWith(nextDate) }
-
             if (dailyTimeSeries.isNotEmpty()) {
-                val highestTemp = dailyTimeSeries.flatMap { it.parameters[ParameterIndex.T.ordinal].values }.max()
-                val lowestTemp = dailyTimeSeries.flatMap { it.parameters[ParameterIndex.T.ordinal].values }.min()
-                val averageWindSpeed = dailyTimeSeries.flatMap { it.parameters[ParameterIndex.WS.ordinal].values }
+                val highestTemp = dailyTimeSeries.flatMap { it.parameters[findIndexByParameterName("t",it)].values }.max()
+                val lowestTemp = dailyTimeSeries.flatMap { it.parameters[findIndexByParameterName("t",it)].values }.min()
+                val averageWindSpeed = dailyTimeSeries.flatMap { it.parameters[findIndexByParameterName("ws",it)].values }
                     .average()
-                forecastList.add(DayForecast(dailyTimeSeries, highestTemp, lowestTemp))
+                val pcat = dailyTimeSeries.flatMap { it.parameters[findIndexByParameterName("pcat",it)].values }
+
+                val occurrences = pcat.groupingBy { it }.eachCount()
+                val mostOccurringNumber = occurrences.maxByOrNull { it.value }?.key
+                var prepicitation_cat = "No precipitation"
+                if( mostOccurringNumber!= null){
+                    prepicitation_cat = findPrecipitationByIndex(mostOccurringNumber.toInt())
+                }
+                forecastList.add(DayForecast(
+                    dailyTimeSeries,
+                    highestTemp,
+                    lowestTemp,
+                    String.format("%.1f",averageWindSpeed).toDouble(),
+                    prepicitation_cat))
             }
         }
         return forecastList
     }
+    fun findPrecipitationByTimeSeries(timeSeries: TimeSeries):String{
+        val index = timeSeries.parameters[findIndexByParameterName("pcat",timeSeries)].values[0]
+        return findPrecipitationByIndex(index.toInt())
+    }
+    fun findTemperatureByTimeSeries(timeSeries: TimeSeries):Double{
+        return timeSeries.parameters[findIndexByParameterName("t",timeSeries)].values[0]
+    }
+    fun findWindSpeedByTimeSeries(timeSeries: TimeSeries):Double{
+        return timeSeries.parameters[findIndexByParameterName("ws",timeSeries)].values[0]
+    }
+    private fun findPrecipitationByIndex(i:Int):String{
+        return when(i){
+            0 -> "No precipitation"
+            1 -> "Snow"
+            2 -> "Snow and rain"
+            3 -> "Rain"
+            4 -> "Drizzle"
+            5 -> "Freezing rain"
+            6 -> "Freezing drizzle"
+            else -> "Unknown precipitation"
+        }
+    }
+
+    private fun findIndexByParameterName(name:String, timeSeries: TimeSeries):Int{
+        return timeSeries.parameters.indexOfFirst { it.name == name }
+    }
 
 }
-enum class ParameterIndex {
-    SPP,
-    PCAT,
-    PMIN,
-    PMEAN,
-    PMAX,
-    PMEDIAN,
-    TCC_MEAN,
-    LCC_MEAN,
-    MCC_MEAN,
-    HCC_MEAN,
-    T,
-    MSL,
-    VIS,
-    WD,
-    WS,
-    R,
-    TSTM,
-    GUST,
-    WSYMB2
-}
+
 data class DayForecast(
     val timeSeries: List<TimeSeries>,
     val highestTemp: Double,
     val lowestTemp: Double,
+    val averageWindSpeed:Double,
+    val avgPCAT:String
 )
 
 data class Weather(
