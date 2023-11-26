@@ -37,6 +37,8 @@ import android.view.WindowInsets
 import android.view.WindowInsetsController
 import androidx.compose.foundation.layout.width
 import androidx.compose.ui.Alignment
+import com.example.mobila_applikationer_lab12.model.data.DayForecast
+import com.example.mobila_applikationer_lab12.model.data.WeatherModel
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
@@ -49,9 +51,9 @@ class MainActivity : ComponentActivity() {
                 val navController = rememberNavController()
                 val vm = WeatherVM(application = application)
 
-//                    runBlocking {
-//                        test()
-//                    }
+ //                   runBlocking {
+ //                       test()
+ //                   }
 
                 var buttonsVisible = remember { mutableStateOf(true) }
                 Surface(
@@ -94,6 +96,16 @@ suspend fun test(){
     Log.d("TEST","Hello world")
     val result = JokeDataSource.getRandomJoke()
     Log.d("TEST",result.toString())
+
+    val weatherModel = WeatherModel()
+    val dayForecast = weatherModel.getHourlyForecast("Stockholm")
+    Log.d("DATA_DAY","Current time=${dayForecast.timeSeries[1].validTime}")
+    Log.d("DATA_DAY","Lowest tmp=${dayForecast.lowestTemp} highest tmp=${dayForecast.highestTemp}")
+    val weeklyForecast = weatherModel.getWeeklyForecast("Stockholm")
+    Log.d("DATA_WEEKLY","Nr of weekly forecasts=${weeklyForecast.size}")
+    weeklyForecast.forEach {
+        Log.d("DATA_WEEKLY_DAY","Lowest tmp=${it.lowestTemp} Highest tmp=${it.highestTemp}")
+    }
 }
 
 @Composable
