@@ -31,6 +31,8 @@ import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import com.example.mobila_applikationer_lab12.model.data.WeatherModel
+import com.example.mobila_applikationer_lab12.ui.screens.Favorites
+import com.example.mobila_applikationer_lab12.ui.screens.Search
 import kotlinx.coroutines.runBlocking
 
 class MainActivity : ComponentActivity() {
@@ -46,7 +48,7 @@ class MainActivity : ComponentActivity() {
                 val vm = WeatherVM(application = application, weatherModel = weatherModel)
 
                 runBlocking {
-                    test(weatherModel)
+//                    test(weatherModel)
                 }
 
                 var buttonsVisible = remember { mutableStateOf(true) }
@@ -76,8 +78,10 @@ fun NavigationGraph(navController: NavHostController,vm: WeatherVM) {
             Home(vm,navController)
         }
         composable(Destinations.Search.route) {
+            Search(vm = vm,navController)
         }
         composable(Destinations.Favourite.route) {
+            Favorites(vm=vm)
         }
     }
 }

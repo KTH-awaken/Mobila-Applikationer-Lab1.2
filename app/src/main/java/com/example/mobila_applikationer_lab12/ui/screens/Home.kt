@@ -14,6 +14,7 @@ import androidx.navigation.NavController
 import com.example.mobila_applikationer_lab12.ui.components.HourlyView
 import com.example.mobila_applikationer_lab12.ui.components.Overview
 import com.example.mobila_applikationer_lab12.ui.components.SevenDayView
+import com.example.mobila_applikationer_lab12.ui.theme.Styles.blueBg
 import com.example.mobila_applikationer_lab12.ui.viewmodels.WeatherVM
 
 //Scafold verson
@@ -29,7 +30,7 @@ fun Home(
     Column( // Container
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(33, 36, 74)),
+            .background(blueBg),
         horizontalAlignment = Alignment.CenterHorizontally,
 
         ){

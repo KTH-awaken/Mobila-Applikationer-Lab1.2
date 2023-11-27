@@ -1,6 +1,6 @@
 package com.example.mobila_applikationer_lab12.ui.components
 
-import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,14 +18,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.example.mobila_applikationer_lab12.model.data.Day
-import com.example.mobila_applikationer_lab12.ui.Styles.componentWidth
+import com.example.mobila_applikationer_lab12.ui.theme.Styles.componentWidth
 import com.example.mobila_applikationer_lab12.ui.viewmodels.WeatherVM
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlin.math.roundToInt
+import com.example.mobila_applikationer_lab12.R
+import com.example.mobila_applikationer_lab12.ui.theme.Styles.lightBlueCard
+import com.example.mobila_applikationer_lab12.ui.theme.Styles.yellowAccent
 
 @Composable
 fun SevenDayView(vm : WeatherVM,){
@@ -38,7 +45,7 @@ fun SevenDayView(vm : WeatherVM,){
     ) {
 
         val customCardColors = CardDefaults.cardColors(
-            containerColor = Color(54, 59, 100),
+            containerColor = lightBlueCard,
         )
         ElevatedCard(
             colors = customCardColors,
@@ -49,7 +56,7 @@ fun SevenDayView(vm : WeatherVM,){
             LazyColumn(
                 modifier = Modifier
             ){
-                items(weeklyForecast?.take(14) ?: emptyList()) { day ->
+                items(weeklyForecast?.take(30) ?: emptyList()) { day ->
                     Day(day = day)
                 }
             }
@@ -61,20 +68,59 @@ fun SevenDayView(vm : WeatherVM,){
 fun Day(day: Day) {
     val dayName = getDayName(day.day)
     val isToday = isToday(day.day)
-    Log.d("MyApp",day.toString())
     Row(
         modifier = Modifier
-            .padding(top = 12.dp, bottom = 12.dp)
+            .padding(top = 12.dp, start = 24.dp, end = 24.dp, bottom = 12.dp)
             .fillMaxWidth(),
-        horizontalArrangement = Arrangement.SpaceEvenly
+        horizontalArrangement = Arrangement.SpaceBetween
+        //        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
+            modifier = Modifier.weight(1f),
             text = if (isToday) "Idag" else dayName,
-            color = if (isToday) Color(242, 230, 113) else Color.White
+            color = if (isToday) yellowAccent else Color.White
         )
-        Text(text = day.chanceOfRain, color = Color.White)
-        Text(text = day.temperatureHighest, color = Color.White)
-        Text(text = day.temperatureLowest, color = Color.White)
+        Row(
+            modifier = Modifier.weight(1f)
+            ,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            var icon = painterResource(id = R.drawable.drop_half_full)
+            val chanceOfRain = day.chanceOfRain?.toDoubleOrNull() ?: 0.0
+            if (chanceOfRain>50){
+                icon = painterResource(id = R.drawable.drop_full)
+            }
+            Image(painter = icon, contentDescription = "water droplet")
+            Text(
+                text = "${chanceOfRain.roundToInt()}%",
+                color = Color.White
+            )
+        }
+        Row (
+            modifier = Modifier.weight(0.7f)
+        ){
+            DisplayIcon(icon = day.iconType, size = 30.dp)
+        }
+
+        Text(
+            text = buildAnnotatedString {
+                var highestTemp = day.temperatureHighest.takeIf { it.isNotEmpty() }?.toDoubleOrNull()?.roundToInt()
+                var lowestTemp = day.temperatureLowest.takeIf { it.isNotEmpty() }?.toDoubleOrNull()?.roundToInt()
+
+                if (highestTemp == null) {
+                    highestTemp=0
+                }
+                withStyle(style = SpanStyle(color = Color.White)) {
+                        append("$highestTemp°")
+                    }
+                if (lowestTemp == null) {
+                    lowestTemp = 0
+                }
+                withStyle(style = SpanStyle(color = Color.White)) {
+                        append("  $lowestTemp°")
+                }
+            }
+        )
     }
 }
 

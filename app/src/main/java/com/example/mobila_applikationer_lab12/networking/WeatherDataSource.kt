@@ -22,7 +22,8 @@ object WeatherDataSource {
     private fun getBASE_URL(longitude:Double,latitude:Double):String{
         val lon = truncateLastCharsFromDouble(longitude,2)
         val lat = truncateLastCharsFromDouble(latitude,2)
-        return "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/${lon}/lat/${lat}/data.json"
+        return "https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/${lon}/lat/${lat}/data.json" //Real
+//        return "https://maceo.sth.kth.se/weather/forecast?lonLat=lon/${lon}/lat/${lat}/data.json" //Test
     }
     suspend fun getWeather(lon:Double,lat:Double): Result<Forecast> {
         val urlString = getBASE_URL(lon,lat)

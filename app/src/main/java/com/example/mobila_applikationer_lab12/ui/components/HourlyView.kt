@@ -1,10 +1,8 @@
 package com.example.mobila_applikationer_lab12.ui.components
 
-import android.annotation.SuppressLint
-import android.util.Log
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,19 +19,21 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.example.mobila_applikationer_lab12.ui.Styles.componentWidth
+import com.example.mobila_applikationer_lab12.R
+import com.example.mobila_applikationer_lab12.ui.theme.Styles.componentWidth
+import com.example.mobila_applikationer_lab12.ui.theme.Styles.lightBlueCard
+import com.example.mobila_applikationer_lab12.ui.theme.Styles.yellowAccent
 import com.example.mobila_applikationer_lab12.ui.viewmodels.Hour
 import com.example.mobila_applikationer_lab12.ui.viewmodels.WeatherVM
-import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Locale
+import kotlin.math.roundToInt
 
 @Composable
 fun HourlyView(vm : WeatherVM, ) {
     val hourlyForecast by vm.hourlyForecast.collectAsState()
-    Log.d("MyApp", "HourlyForecast size: ${hourlyForecast?.size}")
 
     Column(
         modifier = Modifier
@@ -43,14 +43,14 @@ fun HourlyView(vm : WeatherVM, ) {
     ) {
 
         val customCardColors = CardDefaults.cardColors(
-            containerColor = Color(54, 59, 100),
+            containerColor = lightBlueCard,
         )
 
         ElevatedCard(
             colors = customCardColors,
             elevation = CardDefaults.cardElevation(defaultElevation = 6.dp),
             modifier = Modifier
-                .size(width = componentWidth, height = 130.dp)
+                .size(width = componentWidth, height = 140.dp)
         ){
 
             Row(
@@ -75,15 +75,31 @@ fun HourlyView(vm : WeatherVM, ) {
 fun Hour(hour: Hour){
     Column(
         modifier = Modifier
-            .padding(top = 12.dp, bottom = 12.dp)
+            .padding(top = 5.dp, bottom = 5.dp)
             .fillMaxHeight()
         ,
+        horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.SpaceEvenly
     ) {
         val originalFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'")
         val parsedDateTime = LocalDateTime.parse(hour.time, originalFormatter)
-        Text( text = DateTimeFormatter.ofPattern("HH:mm").format(parsedDateTime),color = Color.White)
-        Text(text = hour.temperature,color = Color.White)
-        Text(text = hour.chanceOfRain,color = Color.White)
+        val currentDateTime = LocalDateTime.now()
+
+        if (parsedDateTime.hour == currentDateTime.hour) {
+            Text(text = "Nu", color = yellowAccent)
+        } else {
+            Text(text = DateTimeFormatter.ofPattern("HH:mm").format(parsedDateTime), color = Color.White)
+        }
+        DisplayIcon(icon = hour.iconType, size = 30.dp)
+        Text(text = (hour.temperature.toDoubleOrNull()?.roundToInt()?.toString() + "°") ?: "", color = Color.White)
+        Row {
+            var icon = painterResource(id = R.drawable.drop_half_full)
+            val chanceOfRain = hour.chanceOfRain?.toDoubleOrNull() ?: 0.0
+            if (chanceOfRain >50){
+                icon = painterResource(id = R.drawable.drop_full)
+            }
+            Image(painter = icon, contentDescription = "water droplet")
+        Text(text = (hour.chanceOfRain.toDoubleOrNull()?.roundToInt()?.toString().toString()+"%"),color = Color.White)
+        }
     }
 }

@@ -20,28 +20,32 @@ import androidx.compose.ui.unit.sp
 import com.example.mobila_applikationer_lab12.R
 import com.example.mobila_applikationer_lab12.ui.viewmodels.WeatherVM
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import kotlin.math.roundToInt
 
 @Composable
 fun Overview(
    vm :WeatherVM
 ){
+//    val currentAreaTemperature = vm.currentAreaTemperature.collectAsState()
+    val cityToShow = vm.cityToShow.collectAsState()
+    val hourlyForecast by vm.hourlyForecast.collectAsState()
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        val currentAreaTemperature = vm.currentAreaTemperature.collectAsState()
         Text(
             modifier = Modifier
-                .padding(top = 40.dp,bottom = 40.dp),
-            text = "${currentAreaTemperature.value}°",
+                .padding(top = 40.dp,bottom = 30.dp),
+            text = "${hourlyForecast[0].temperature.toDoubleOrNull()?.roundToInt()}°",
             style = MaterialTheme.typography.headlineLarge.copy(fontSize = 60.sp),
             color = Color.White,
         )
-        WeatherIcon(iconResId = R.drawable.baseline_nights_stay_24)
+        DisplayIcon(icon = hourlyForecast[0].iconType, size =64.dp )
         Text(
             modifier = Modifier
-                .padding(bottom = 10.dp),
-            text = "Stockholm",
+                .padding(bottom = 15.dp),
+            text = "${cityToShow.value}",
             style = MaterialTheme.typography.headlineMedium,
             color = Color.White,
         )

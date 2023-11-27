@@ -1,22 +1,13 @@
 package com.example.mobila_applikationer_lab12.ui.viewmodels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
 import com.example.mobila_applikationer_lab12.model.data.Day
-import com.example.mobila_applikationer_lab12.model.data.Forecast
-import com.example.mobila_applikationer_lab12.model.data.Geometry
 import com.example.mobila_applikationer_lab12.model.data.WeatherModel
-import com.example.mobila_applikationer_lab12.networking.WeatherDataSource
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import com.example.mobila_applikationer_lab12.utils.Result
-import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.launch
-import java.lang.Exception
-import com.example.mobila_applikationer_lab12.utils.getCurrentAreaTemperature
 import kotlinx.coroutines.runBlocking
 
 interface WeatherViewModel{
@@ -44,6 +35,11 @@ class WeatherVM(
 
     private val _weeklyForecast = MutableStateFlow<List<Day>>(emptyList())
     val weeklyForecast: StateFlow<List<Day>> get() = _weeklyForecast
+
+    private var _cityToShow = MutableStateFlow<String>("Stockholm")
+    val cityToShow: StateFlow<String> get() = _cityToShow
+
+
 
     init {
         runBlocking{
@@ -90,29 +86,34 @@ class WeatherVM(
     }
 
     private fun updateHourlyForecast() {
-        val rawForecast = weatherModel.getHourlyForecast("Stockholm")
+        val rawForecast = weatherModel.getHourlyForecast(cityToShow.value)
         val hourList = rawForecast.map { timeSeries ->
             Hour(
                 time = timeSeries.validTime,
-                temperature = "${timeSeries.parameters.find { it.name == "t" }?.values?.get(0)}°C",
-                chanceOfRain = "${timeSeries.parameters.find { it.name == "pcat" }?.values?.get(0)}%"
+                temperature = "${timeSeries.parameters.find { it.name == "t" }?.values?.get(0)}",
+                chanceOfRain = "${timeSeries.parameters.find { it.name == "pcat" }?.values?.get(0)}",
+                iconType = weatherModel.determineIconType(timeSeries.parameters)
             )
         }
         _hourlyForecast.value = hourList
     }
 
     private suspend fun updateWeeklyForecast(){
-        val forecast = weatherModel.getWeeklyForecast("Stockholm")
+        val forecast = weatherModel.getWeeklyForecast(cityToShow.value)
         _weeklyForecast.value = forecast
-        Log.d("MyApp",_weeklyForecast.value[1].toString())
+//        Log.d("MyApp",_weeklyForecast.value[1].toString())
+//        Log.d("MyApp",_weeklyForecast.value.toString())
     }
 
-
+    fun setCityToShow(cityToShow:String){
+        _cityToShow.value=cityToShow
+    }
 }
 
 data class Hour(
     val time: String,
     val temperature: String,
-    val chanceOfRain: String
+    val chanceOfRain: String,
+    val iconType: String
 )
 
