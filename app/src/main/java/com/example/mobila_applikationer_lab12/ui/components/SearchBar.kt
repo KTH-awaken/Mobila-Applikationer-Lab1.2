@@ -11,6 +11,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Clear
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -47,20 +48,20 @@ fun SearchBar(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
+            .padding(top = 10.dp)
     ) {
         // Search bar
         OutlinedTextField(
             value = text,
             onValueChange = {
                 text = it
-                // You can perform search operations as the text changes
             },
-            placeholder = { Text("Search...") },
+            placeholder = { Text("Search...", color = Color.White) },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(8.dp),
             leadingIcon = {
-                Image(imageVector =  Icons.Outlined.Search, contentDescription ="Search icon")
+                Icon(imageVector =  Icons.Outlined.Search, contentDescription ="Search icon", tint = Color.White)
             },
             trailingIcon = {
                 if (text.isNotEmpty()) {
@@ -69,7 +70,7 @@ fun SearchBar(
                             text = ""
                         }
                     ) {
-                        Image(imageVector = Icons.Outlined.Clear, contentDescription = "Clear icon")
+                        Icon(imageVector = Icons.Outlined.Clear, contentDescription = "Clear icon",tint = Color.White)
                     }
                 }
             },
@@ -79,14 +80,13 @@ fun SearchBar(
             ),
             keyboardActions = KeyboardActions(
                 onSearch = {
-                    // Perform search action when the search button is clicked on the keyboard
+
                     vm.setCityToShow(text)
                     runBlocking {
                         vm.fetchWeatherData()
                     }
                     isSearchActive = false
-                    // You can call a function to handle the search operation here
-                    // For example: performSearch(text)
+
                     keyboardController?.hide()
                     navController.navigate("home")
                 }
@@ -94,11 +94,10 @@ fun SearchBar(
             colors = TextFieldDefaults.outlinedTextFieldColors(
                 focusedBorderColor = blueAction,
                 unfocusedBorderColor = blueAction.copy(alpha = 0.5f),
-                cursorColor = blueAction
+                cursorColor = blueAction,
+                textColor = Color.White,
             )
         )
 
-        // Add any other components related to the search bar here
-        // For example, you can add filter options or search suggestions
     }
 }

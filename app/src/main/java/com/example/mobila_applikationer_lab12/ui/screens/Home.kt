@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
+import com.example.mobila_applikationer_lab12.ui.components.AddToFavorite
 import com.example.mobila_applikationer_lab12.ui.components.HourlyView
 import com.example.mobila_applikationer_lab12.ui.components.Overview
 import com.example.mobila_applikationer_lab12.ui.components.SevenDayView

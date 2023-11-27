@@ -78,10 +78,16 @@ class WeatherVM(
 
         //todo implement
     }
+    fun removeFromFavorites(cityName: String){
+        //todo implement
+    }
     private fun getSavedWeather(){
         //TODO implement this
         //_weeklyForecast todo init this
         //_hourlyForecast
+    }
+    fun  isCityFavorite(cityName: String):Boolean{
+        return favorites.value.any { it.cityName == cityName }
     }
 
     private fun saveAllData(){
