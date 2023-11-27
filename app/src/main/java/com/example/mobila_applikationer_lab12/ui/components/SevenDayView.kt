@@ -32,6 +32,7 @@ import java.util.Locale
 import kotlin.math.roundToInt
 import com.example.mobila_applikationer_lab12.R
 import com.example.mobila_applikationer_lab12.ui.theme.Styles.lightBlueCard
+import com.example.mobila_applikationer_lab12.ui.theme.Styles.lightBlueText
 import com.example.mobila_applikationer_lab12.ui.theme.Styles.yellowAccent
 
 @Composable
@@ -78,7 +79,7 @@ fun Day(day: Day) {
         Text(
             modifier = Modifier.weight(1f),
             text = if (isToday) "Idag" else dayName,
-            color = if (isToday) yellowAccent else Color.White
+            color = if (isToday) lightBlueText else Color.White
         )
         Row(
             modifier = Modifier.weight(1f)

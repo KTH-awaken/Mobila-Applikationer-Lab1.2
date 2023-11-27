@@ -11,9 +11,6 @@ import com.example.mobila_applikationer_lab12.utils.Result
 import kotlinx.coroutines.runBlocking
 
 interface WeatherViewModel{
-    //VM datamedlemar
-    val currentAreaTemperature: StateFlow<String>
-
     //VM funktioner
     suspend fun fetchWeatherData()
 }
@@ -22,10 +19,6 @@ class WeatherVM(
     application: Application,
     private val weatherModel: WeatherModel,
     ) :AndroidViewModel(application), WeatherViewModel{
-
-    private val _currentAreaTemperature = MutableStateFlow("-1")
-    override val currentAreaTemperature: StateFlow<String>
-        get() = _currentAreaTemperature.asStateFlow()
 
     private val _weatherState = MutableStateFlow<Result<String>>(Result.Loading)
     val weatherState: StateFlow<Result<String>> = _weatherState
@@ -39,13 +32,15 @@ class WeatherVM(
     private var _cityToShow = MutableStateFlow<String>("Stockholm")
     val cityToShow: StateFlow<String> get() = _cityToShow
 
+    private val _favorites = MutableStateFlow<List<Favorite>>(emptyList())
+    val favorites: StateFlow<List<Favorite>> get() = _favorites
+
 
 
     init {
         runBlocking{
             fetchWeatherData()
         }
-
         getSavedWeather()
     }
 
@@ -54,31 +49,8 @@ class WeatherVM(
         updateHourlyForecast()
         //Weekly
         updateWeeklyForecast()
-        //Overview
-//        viewModelScope.launch {
-//            _weatherState.value = Result.Loading
-//            try {
-//                val result= WeatherDataSource.getWeather()
-//                if (result is Result.Success){
-//                    val f = Forecast(
-//                        result.data.approvedTime,
-//                        result.data.referenceTime,
-//                        Geometry(
-//                            result.data.geometry.type,
-//                            result.data.geometry.coordinates
-//                        ),
-//                        result.data.timeSeries
-//                    )
-////                    val c = f.getCurrentAreaTemperature()
-//                    _currentAreaTemperature.update { c.toString() }
-//                    //TODO SAVE Weather to db
-//                }else{
-//                    _weatherState.value = Result.Error(Exception("Failed to fetch data"))
-//                }
-//            }catch (e: Exception){
-//                _weatherState.value = Result.Error(e)
-//            }
-//        }
+
+
     }
 
     private fun getSavedWeather(){
@@ -101,8 +73,6 @@ class WeatherVM(
     private suspend fun updateWeeklyForecast(){
         val forecast = weatherModel.getWeeklyForecast(cityToShow.value)
         _weeklyForecast.value = forecast
-//        Log.d("MyApp",_weeklyForecast.value[1].toString())
-//        Log.d("MyApp",_weeklyForecast.value.toString())
     }
 
     fun setCityToShow(cityToShow:String){
@@ -115,5 +85,10 @@ data class Hour(
     val temperature: String,
     val chanceOfRain: String,
     val iconType: String
+)
+
+data class Favorite(
+    val cityName:String,
+    val day: Day,
 )
 

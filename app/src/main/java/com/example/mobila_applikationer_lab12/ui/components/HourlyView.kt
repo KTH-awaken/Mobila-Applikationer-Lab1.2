@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.example.mobila_applikationer_lab12.R
 import com.example.mobila_applikationer_lab12.ui.theme.Styles.componentWidth
 import com.example.mobila_applikationer_lab12.ui.theme.Styles.lightBlueCard
+import com.example.mobila_applikationer_lab12.ui.theme.Styles.lightBlueText
 import com.example.mobila_applikationer_lab12.ui.theme.Styles.yellowAccent
 import com.example.mobila_applikationer_lab12.ui.viewmodels.Hour
 import com.example.mobila_applikationer_lab12.ui.viewmodels.WeatherVM
@@ -86,7 +87,7 @@ fun Hour(hour: Hour){
         val currentDateTime = LocalDateTime.now()
 
         if (parsedDateTime.hour == currentDateTime.hour) {
-            Text(text = "Nu", color = yellowAccent)
+            Text(text = "Nu", color = lightBlueText)
         } else {
             Text(text = DateTimeFormatter.ofPattern("HH:mm").format(parsedDateTime), color = Color.White)
         }

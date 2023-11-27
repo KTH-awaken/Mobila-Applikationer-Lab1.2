@@ -75,7 +75,7 @@ class MainActivity : ComponentActivity() {
 fun NavigationGraph(navController: NavHostController,vm: WeatherVM) {
     NavHost(navController, startDestination = Destinations.HomeScreen.route) {
         composable(Destinations.HomeScreen.route) {
-            Home(vm,navController)
+            Home(vm)
         }
         composable(Destinations.Search.route) {
             Search(vm = vm,navController)

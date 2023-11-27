@@ -9,4 +9,5 @@ object Styles{
     val yellowAccent = Color(243, 231, 111)
     val blueAction = Color(161, 187, 228)
     val lightBlueCard = Color(54, 59, 100)
+    val lightBlueText = Color(161, 185, 221)
 }

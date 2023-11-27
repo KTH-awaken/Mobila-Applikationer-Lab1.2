@@ -27,7 +27,6 @@ import kotlin.math.roundToInt
 fun Overview(
    vm :WeatherVM
 ){
-//    val currentAreaTemperature = vm.currentAreaTemperature.collectAsState()
     val cityToShow = vm.cityToShow.collectAsState()
     val hourlyForecast by vm.hourlyForecast.collectAsState()
     Column(
