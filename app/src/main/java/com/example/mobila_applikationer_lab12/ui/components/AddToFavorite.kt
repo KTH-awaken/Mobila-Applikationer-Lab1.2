@@ -41,7 +41,9 @@ fun AddToFavorite(
             onClick = {
                 if (vm.isCityFavorite(cityToShow.value)) {
                     vm.removeFromFavorites(cityToShow.value)
+                    vm.setIsFavorite(false)
                 } else {
+                    vm.setIsFavorite(true)
                     vm.addToFavorites(cityToShow.value,weeklyForecast[0])
                 }
             }
@@ -50,7 +52,7 @@ fun AddToFavorite(
                 Icon(
                     imageVector = Icons.Outlined.Star,
                     contentDescription = "Star",
-                    tint = if (vm.isCityFavorite(cityToShow.value)) color else Color.Gray
+                    tint = if (vm.isCityFavorite(cityToShow.value)||vm.isFavorite.value) color else Color.Gray
                 )
             }else{
                 Icon(

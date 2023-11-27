@@ -46,6 +46,8 @@ class WeatherVM(
     private val _favorites = MutableStateFlow<List<Favorite>>(emptyList())
     val favorites: StateFlow<List<Favorite>> get() = _favorites
 
+    private var _isFavorite = MutableStateFlow<Boolean>(false)
+    val isFavorite: StateFlow<Boolean> get() = _isFavorite
 
 
     init {
@@ -106,8 +108,12 @@ class WeatherVM(
         //todo implement
     }
 
-    fun  isCityFavorite(cityName: String):Boolean{
+    fun isCityFavorite(cityName: String):Boolean{
         return favorites.value.any { it.cityName == cityName }
+    }
+
+    fun setIsFavorite(isFavorite: Boolean){
+        _isFavorite.value=isFavorite
     }
 
     private fun saveAllData(){
