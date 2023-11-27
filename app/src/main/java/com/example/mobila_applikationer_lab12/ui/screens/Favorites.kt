@@ -75,14 +75,12 @@ fun Favorite(favorite:Favorite){
                 Text(
                     modifier = Modifier
                         .padding(10.dp),
-//                    text = "Stockholm",
                     text = "${favorite.cityName}",
                     style = MaterialTheme.typography.headlineMedium,
                     color = Color.White,
 
                 )
-//                var highestTemp = 1
-//                var lowestTemp = -1
+
                 var highestTemp = favorite.day.temperatureHighest.takeIf { it.isNotEmpty() }?.toDoubleOrNull()?.roundToInt()
                 var lowestTemp = favorite.day.temperatureLowest.takeIf { it.isNotEmpty() }?.toDoubleOrNull()?.roundToInt()
                 if (highestTemp == null) { highestTemp=0}
@@ -91,9 +89,6 @@ fun Favorite(favorite:Favorite){
                 Text(text = "High  $highestTemp°", color = Color.White, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(start = 10.dp, bottom = 5.dp))
                 Text(text = "Low   $lowestTemp°",color = Color.White,style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(start = 10.dp))
 
-
-
-
             }
             Column (
                 modifier = Modifier.fillMaxWidth(),
@@ -101,8 +96,7 @@ fun Favorite(favorite:Favorite){
                 verticalArrangement = Arrangement.Center,
             ){
                 Spacer(modifier = Modifier.height(20.dp))
-                DisplayIcon(icon = favorite.day.iconType, size = 30.dp)//Real
-//                DisplayIcon(icon = "sunny", size = 80.dp)
+                DisplayIcon(icon = favorite.day.iconType, size = 80.dp)//Real
             }
         }
     }
