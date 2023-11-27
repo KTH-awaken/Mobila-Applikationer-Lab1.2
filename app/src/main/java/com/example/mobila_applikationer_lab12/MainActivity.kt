@@ -1,5 +1,8 @@
 package com.example.mobila_applikationer_lab12
 
+import FavouritesRepo
+import android.app.Application
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -30,23 +33,28 @@ import android.os.Build
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
+import androidx.datastore.preferences.preferencesDataStore
+import androidx.datastore.preferences.preferencesDataStoreFile
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.mobila_applikationer_lab12.model.data.WeatherModel
 import com.example.mobila_applikationer_lab12.ui.screens.Favorites
 import com.example.mobila_applikationer_lab12.ui.screens.Search
 import kotlinx.coroutines.runBlocking
+import androidx.datastore.preferences.preferencesDataStore
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         hideSystemBars()
+        val weatherApplication = application as WeatherApplication
         setContent {
             MobilaApplikationerLab12Theme {
                 val navController = rememberNavController()
                 val weatherModel = WeatherModel()
-                val vm = WeatherVM(application = application, weatherModel = weatherModel)
-
+                val vm = WeatherVM(application = weatherApplication, weatherModel = weatherModel,weatherApplication.favouritesRepo )
                 runBlocking {
 //                    test(weatherModel)
                 }
