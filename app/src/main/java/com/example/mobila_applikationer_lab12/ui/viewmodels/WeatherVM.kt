@@ -20,8 +20,6 @@ class WeatherVM(
     private val weatherModel: WeatherModel,
     ) :AndroidViewModel(application), WeatherViewModel{
 
-    private val _weatherState = MutableStateFlow<Result<String>>(Result.Loading)
-    val weatherState: StateFlow<Result<String>> = _weatherState
 
     private val _hourlyForecast = MutableStateFlow<List<Hour>>(emptyList())
     val hourlyForecast: StateFlow<List<Hour>> get() = _hourlyForecast
@@ -53,9 +51,6 @@ class WeatherVM(
 
     }
 
-    private fun getSavedWeather(){
-        //TODO implement this
-    }
 
     private fun updateHourlyForecast() {
         val rawForecast = weatherModel.getHourlyForecast(cityToShow.value)
@@ -78,6 +73,24 @@ class WeatherVM(
     fun setCityToShow(cityToShow:String){
         _cityToShow.value=cityToShow
     }
+
+    fun addToFavorites(cityName: String){
+
+        //todo implement
+    }
+    private fun getSavedWeather(){
+        //TODO implement this
+        //_weeklyForecast todo init this
+        //_hourlyForecast
+    }
+
+    private fun saveAllData(){
+//        _weeklyForecast todo save this
+//        _hourlyForecast
+
+    }
+
+
 }
 
 data class Hour(
