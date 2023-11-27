@@ -1,6 +1,7 @@
 package com.example.mobila_applikationer_lab12.ui.screens
 
 import android.annotation.SuppressLint
+import android.content.res.Configuration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.navigation.NavController
 import com.example.mobila_applikationer_lab12.ui.components.AddToFavorite
 import com.example.mobila_applikationer_lab12.ui.components.HourlyView
@@ -33,9 +35,18 @@ fun Home(
         horizontalAlignment = Alignment.CenterHorizontally,
 
         ){
-        Overview(vm = vm)
-        HourlyView(vm = vm)
-        SevenDayView(vm = vm)
+        val config = LocalConfiguration.current
+        if(config.orientation == Configuration.ORIENTATION_PORTRAIT){
+            Overview(vm = vm)
+            HourlyView(vm = vm)
+            SevenDayView(vm = vm)
+        }else{
+            Row {
+                Overview(vm = vm)
+                HourlyView(vm = vm)
+                SevenDayView(vm = vm)
+            }
+        }
     }
 }
 

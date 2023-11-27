@@ -1,5 +1,6 @@
 package com.example.mobila_applikationer_lab12
 
+import android.content.res.Configuration
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -30,6 +31,8 @@ import android.os.Build
 import android.view.View
 import android.view.WindowInsets
 import android.view.WindowInsetsController
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.ui.platform.LocalConfiguration
 import com.example.mobila_applikationer_lab12.model.data.WeatherModel
 import com.example.mobila_applikationer_lab12.ui.screens.Favorites
 import com.example.mobila_applikationer_lab12.ui.screens.Search
