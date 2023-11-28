@@ -1,26 +1,21 @@
 package com.example.mobila_applikationer_lab12.ui.viewmodels
 
 import FavouritesRepo
-import android.app.Application
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.util.Log
-import androidx.datastore.core.DataStore
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.initializer
-import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.mobila_applikationer_lab12.WeatherApplication
 import com.example.mobila_applikationer_lab12.model.data.Day
 import com.example.mobila_applikationer_lab12.model.data.WeatherModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
-import com.example.mobila_applikationer_lab12.utils.Result
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.util.prefs.Preferences
+import kotlinx.coroutines.withContext
 
 interface WeatherViewModel{
     //VM funktioner
@@ -51,8 +46,21 @@ class WeatherVM(
 
 
     init {
-        runBlocking{
-            fetchWeatherData()
+        viewModelScope.launch(Dispatchers.Default) {
+            if (isInternetAvailable(context = application)) {
+                withContext(Dispatchers.IO) {
+                    fetchWeatherData()
+                    saveHomeData()
+                }
+                Log.d("INTERNET", "Has internet")
+            } else {
+                Log.d("INTERNET", "Has no internet")
+                favouritesRepo.homeData.collect { homeData ->
+                    _hourlyForecast.value = homeData.hourly
+                    _weeklyForecast.value = homeData.weekly
+                    Log.d("COLLECT", "Home data collection: ${_hourlyForecast.value}")
+                }
+            }
         }
         viewModelScope.launch {
             Log.d("COLLECT","Collecting...")
@@ -102,7 +110,7 @@ class WeatherVM(
         currentFavourites.add(Favorite(cityName, day))
         _favorites.value = currentFavourites
         Log.d("SAVING","Adding Favourites : ${_favorites.value}")
-        saveAllData()
+        saveFavouritesData()
     }
     fun removeFromFavorites(cityName: String){
         //todo implement
@@ -116,15 +124,36 @@ class WeatherVM(
         _isFavorite.value=isFavorite
     }
 
-    private fun saveAllData(){
+    private fun saveFavouritesData(){
         runBlocking {
-//        _weeklyForecast todo save this
-//        _hourlyForecast
             Log.d("SAVING","Saving favourites=${_favorites.value}")
             favouritesRepo.saveFavorites(_favorites.value)
         }
     }
+    private fun saveHomeData(){
+        runBlocking {
+            Log.d("SAVING","Saving home data; hourly data=${_hourlyForecast.value}")
+            Log.d("SAVING","Saving home data; weekly data=${_weeklyForecast.value}")
+            favouritesRepo.saveHomeData(HomeData(_weeklyForecast.value,_hourlyForecast.value))
+        }
+    }
 
+    fun isInternetAvailable(context: Context): Boolean {
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        val networkCapabilities = connectivityManager.activeNetwork ?: return false
+        val activeNetwork = connectivityManager.getNetworkCapabilities(networkCapabilities) ?: return false
+
+        return when {
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+            activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> true
+            else -> false
+        }
+    }
+    fun isInternetAvailable():Boolean{
+        return isInternetAvailable(this.getApplication())
+    }
 
 }
 
@@ -137,8 +166,10 @@ data class Hour(
 
 data class Favorite(
     val cityName:String,
-    val day: Day,
-    //TODO weekly
-    //TODO hourly
+    val day: Day
+)
+data class HomeData(
+    val weekly: List<Day>,
+    val hourly:List<Hour>
 )
 
