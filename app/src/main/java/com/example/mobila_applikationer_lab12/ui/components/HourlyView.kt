@@ -38,7 +38,7 @@ fun HourlyView(vm : WeatherVM, ) {
 
     Column(
         modifier = Modifier
-            .padding(10.dp),
+            .padding(top = 10.dp, bottom = 5.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
