@@ -17,6 +17,7 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.navigation.NavController
 import com.example.mobila_applikationer_lab12.ui.components.AddToFavorite
 import com.example.mobila_applikationer_lab12.ui.components.HourlyView
+import com.example.mobila_applikationer_lab12.ui.components.InternetStatus
 import com.example.mobila_applikationer_lab12.ui.components.Overview
 import com.example.mobila_applikationer_lab12.ui.components.SevenDayView
 import com.example.mobila_applikationer_lab12.ui.theme.Styles.blueBg
@@ -37,6 +38,7 @@ fun Home(
         ){
         val config = LocalConfiguration.current
         if(config.orientation == Configuration.ORIENTATION_PORTRAIT){
+            InternetStatus(show = true, hasInternet =vm.isInternetAvailable())
             Overview(vm = vm)
             HourlyView(vm = vm)
             SevenDayView(vm = vm)

@@ -37,6 +37,7 @@ fun Overview(
 ){
     val cityToShow = vm.cityToShow.collectAsState()
     val hourlyForecast by vm.hourlyForecast.collectAsState()
+    val firstHourlyForecast = hourlyForecast.getOrNull(0)
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -45,41 +46,35 @@ fun Overview(
         Text(
             modifier = Modifier
                 .padding(top = 20.dp,bottom = 20.dp),
-            text = "${hourlyForecast[0].temperature.toDoubleOrNull()?.roundToInt()}°",
+//            text = "${hourlyForecast[0].temperature.toDoubleOrNull()?.roundToInt()}°",
+            text = "${firstHourlyForecast?.temperature?.toDoubleOrNull()?.roundToInt() ?: -1}°",
             style = MaterialTheme.typography.headlineLarge.copy(fontSize = 60.sp),
             color = Color.White,
         )
 
-        DisplayIcon(icon = hourlyForecast[0].iconType, size =64.dp )
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-           Row(
-            horizontalArrangement = Arrangement.Center
-           ){
-               AddToFavorite(vm = vm, modifier = Modifier, blueBg,false)
-               Spacer(modifier = Modifier.width(2.dp))
-                Text(
-                    text = "${cityToShow.value}",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = Color.White,
-                )
-           }
-            Spacer(modifier = Modifier.width(2.dp))
-            AddToFavorite(vm = vm,modifier =Modifier.padding(bottom = 5.dp), yellowAccent,true)
+        if (firstHourlyForecast != null) {
+            DisplayIcon(icon = firstHourlyForecast.iconType ?:"sunny", size =64.dp )
         }
-    }
+
+        if (firstHourlyForecast != null){
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                   Row(
+                    horizontalArrangement = Arrangement.Center
+                   ){
+                       AddToFavorite(vm = vm, modifier = Modifier, blueBg,false)
+                       Spacer(modifier = Modifier.width(2.dp))
+                        Text(
+                            text = "${cityToShow.value}",
+                            style = MaterialTheme.typography.headlineMedium,
+                            color = Color.White,
+                        )
+                   }
+                    Spacer(modifier = Modifier.width(2.dp))
+                    AddToFavorite(vm = vm,modifier =Modifier.padding(bottom = 5.dp), yellowAccent,true)
+                }
+            }
+        }
 }
 
-@Composable
-fun WeatherIcon(
-    iconResId: Int
-){
-    val icon = painterResource(id = iconResId)
-    Image(
-        painter = icon,
-        contentDescription = null,
-        modifier = Modifier.size(64.dp)
-    )
-}

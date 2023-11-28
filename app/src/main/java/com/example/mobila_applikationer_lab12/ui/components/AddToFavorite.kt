@@ -9,6 +9,7 @@ import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -32,7 +33,11 @@ fun AddToFavorite(
     val cityToShow = vm.cityToShow.collectAsState()
     val weeklyForecast by vm.weeklyForecast.collectAsState()
 
+    val isFavorite by vm.isFavorite.collectAsState()
 
+    LaunchedEffect(isFavorite) {
+
+    }
     Row(
         modifier = modifier,
         verticalAlignment = Alignment.CenterVertically

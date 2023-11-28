@@ -55,6 +55,7 @@ class WeatherVM(
                 Log.d("INTERNET", "Has internet")
             } else {
                 Log.d("INTERNET", "Has no internet")
+
                 favouritesRepo.homeData.collect { homeData ->
                     _hourlyForecast.value = homeData.hourly
                     _weeklyForecast.value = homeData.weekly
@@ -78,9 +79,7 @@ class WeatherVM(
         //Weekly
         updateWeeklyForecast()
 
-
     }
-
 
     private fun updateHourlyForecast() {
         val rawForecast = weatherModel.getHourlyForecast(cityToShow.value)

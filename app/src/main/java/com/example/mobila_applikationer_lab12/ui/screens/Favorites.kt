@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.MaterialTheme
@@ -32,18 +34,35 @@ import com.example.mobila_applikationer_lab12.ui.viewmodels.Favorite
 import com.example.mobila_applikationer_lab12.ui.viewmodels.WeatherVM
 import kotlin.math.roundToInt
 
+//@Composable
+//fun Favorites(
+//    vm :WeatherVM
+//){
+//    val favorites by vm.favorites.collectAsState()
+//    Column( // Container
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .background(Styles.blueBg),
+//        horizontalAlignment = Alignment.CenterHorizontally,
+//        ){
+//        favorites.forEach { favorite ->
+//            Favorite(favorite)
+//        }
+//    }
+//}
+
 @Composable
 fun Favorites(
     vm :WeatherVM
 ){
     val favorites by vm.favorites.collectAsState()
-    Column( // Container
+    LazyColumn( // Container
         modifier = Modifier
             .fillMaxSize()
             .background(Styles.blueBg),
         horizontalAlignment = Alignment.CenterHorizontally,
-        ){
-        favorites.forEach { favorite ->
+    ){
+        items(favorites) { favorite ->
             Favorite(favorite)
         }
     }
